@@ -1,0 +1,28 @@
+capability: device
+version: 1.0.0
+depends_on:
+  - identity
+  - stations
+  - organizations
+publishes:
+  - DeviceRegistered
+  - DeviceRenamed
+  - DeviceTransferred
+  - DeviceHeartbeatReceived
+  - DeviceFirmwareUpdated
+  - DeviceDecommissioned
+consumes: []
+apis:
+  - POST /devices
+  - GET /devices
+  - GET /devices/{id}
+  - PATCH /devices/{id}
+  - POST /devices/{id}/transfer
+  - DELETE /devices/{id}
+events_version: 1
+audit: true
+ai_readiness:
+  - semanticType
+  - embeddingEligible
+  - knowledgePriority
+  - agentReadable

@@ -1,0 +1,589 @@
+# Nimbus Platform
+
+# Coding Standards
+
+**Version:** 1.0.0  
+**Status:** Approved  
+**Owner:** Chief Architect  
+**Last Updated:** 2026-07-17
+
+---
+
+# Purpose
+
+This document defines the coding standards for Nimbus Platform.
+
+The objective is consistency, readability, maintainability, and long-term evolution—not personal preference.
+
+These standards apply equally to:
+
+- Human developers
+- AI coding agents
+- Code reviewers
+- Open source contributors
+
+If code violates these standards, it should not be merged.
+
+---
+
+# Guiding Principles
+
+Nimbus values:
+
+- Readability over brevity
+- Explicitness over magic
+- Simplicity over cleverness
+- Consistency over preference
+- Maintainability over optimization
+
+Every line of code should be understandable by a new engineer.
+
+---
+
+# General Rules
+
+## Write Self-Documenting Code
+
+Prefer descriptive names.
+
+Good:
+
+```ts
+calculateAverageTemperature()
+```
+
+Avoid:
+
+```ts
+calcAvg()
+```
+
+---
+
+## Small Functions
+
+Functions should perform one responsibility.
+
+Preferred maximum:
+
+- 30–40 lines
+
+If a function becomes difficult to describe in one sentence, split it.
+
+---
+
+## Single Responsibility
+
+Classes, services, and modules should have one primary reason to change.
+
+Avoid "God classes."
+
+---
+
+## Avoid Deep Nesting
+
+Prefer:
+
+```ts
+if (!device) return;
+
+processDevice(device);
+```
+
+Instead of:
+
+```ts
+if (device) {
+    if (device.station) {
+        if (...)
+```
+
+Maximum nesting depth:
+
+3 levels
+
+---
+
+## Prefer Composition
+
+Favor composition over inheritance.
+
+Avoid inheritance unless modeling a true "is-a" relationship.
+
+---
+
+# Naming Conventions
+
+## Variables
+
+camelCase
+
+```ts
+deviceId
+temperatureReading
+lastHeartbeat
+```
+
+---
+
+## Functions
+
+camelCase
+
+Use verbs.
+
+```ts
+createStation()
+assignDevice()
+calculateDewPoint()
+```
+
+---
+
+## Classes
+
+PascalCase
+
+```ts
+TelemetryService
+DeviceRepository
+AlertEvaluator
+```
+
+---
+
+## Interfaces
+
+PascalCase
+
+Do NOT prefix with "I".
+
+Good:
+
+```ts
+TelemetryPayload
+```
+
+Bad:
+
+```ts
+ITelemetryPayload
+```
+
+---
+
+## Enums
+
+PascalCase
+
+Members in PascalCase.
+
+```ts
+enum AlertSeverity {
+    Critical,
+    High,
+    Medium,
+    Low
+}
+```
+
+---
+
+## Constants
+
+UPPER_SNAKE_CASE
+
+```ts
+MAX_RETRY_ATTEMPTS
+DEFAULT_TIMEOUT_MS
+```
+
+---
+
+## Files
+
+Use kebab-case.
+
+```
+device-service.ts
+
+alert-controller.ts
+
+telemetry-repository.ts
+```
+
+---
+
+# TypeScript Standards
+
+Strict mode is mandatory.
+
+Never disable strict typing.
+
+Never use:
+
+```ts
+any
+```
+
+Instead:
+
+```ts
+unknown
+```
+
+or
+
+proper generics.
+
+---
+
+Always define return types on exported functions.
+
+Good:
+
+```ts
+function createDevice(): Device
+```
+
+---
+
+Prefer readonly whenever possible.
+
+```ts
+readonly stationId
+```
+
+---
+
+Use enums sparingly.
+
+Prefer literal unions when appropriate.
+
+---
+
+# Error Handling
+
+Never ignore exceptions.
+
+Never swallow errors.
+
+Bad:
+
+```ts
+catch {}
+```
+
+Always log meaningful context.
+
+```ts
+logger.error({
+    deviceId,
+    stationId,
+    error
+});
+```
+
+Return domain-specific errors.
+
+Avoid generic Error objects.
+
+---
+
+# Logging
+
+Use structured logging.
+
+Never use:
+
+```ts
+console.log()
+```
+
+Production logging uses Pino.
+
+Every log should include relevant identifiers.
+
+Example:
+
+```ts
+logger.info({
+    organizationId,
+    deviceId,
+    stationId
+});
+```
+
+---
+
+# API Standards
+
+Controllers should remain thin.
+
+Controller responsibilities:
+
+- Receive request
+- Validate request
+- Call service
+- Return response
+
+Controllers must never:
+
+- Query Prisma
+- Contain business rules
+- Perform calculations
+
+---
+
+# Repository Standards
+
+Repositories own persistence only.
+
+Repositories may:
+
+- Query database
+- Save entities
+- Delete entities
+
+Repositories may NOT:
+
+- Validate requests
+- Apply business rules
+- Send notifications
+
+---
+
+# Service Standards
+
+Services own business logic.
+
+Services may:
+
+- Coordinate repositories
+- Publish events
+- Execute business rules
+
+Services should not know HTTP implementation details.
+
+---
+
+# Validation Standards
+
+Validate all external input.
+
+Validation must occur before business logic.
+
+Use:
+
+- Zod
+
+Never manually validate request bodies.
+
+---
+
+# Async Code
+
+Always use async/await.
+
+Avoid nested Promise chains.
+
+Good:
+
+```ts
+await repository.save(device);
+```
+
+Avoid:
+
+```ts
+repository.save(device)
+.then(...)
+.catch(...)
+```
+
+---
+
+# Comments
+
+Code should explain itself.
+
+Comments explain WHY.
+
+Not WHAT.
+
+Bad:
+
+```ts
+// Increment counter
+counter++;
+```
+
+Good:
+
+```ts
+// Prevent duplicate telemetry processing
+```
+
+---
+
+# Imports
+
+Import order:
+
+1. Node modules
+
+2. External packages
+
+3. Internal packages
+
+4. Relative imports
+
+Alphabetize within groups.
+
+---
+
+# Testing Standards
+
+Business logic must be unit testable.
+
+Repository tests:
+
+Integration
+
+Controllers:
+
+Integration
+
+Utility functions:
+
+Unit
+
+Critical workflows:
+
+End-to-End
+
+---
+
+# Performance Guidelines
+
+Do not optimize prematurely.
+
+Optimize when:
+
+- Measured
+- Repeatable
+- Justified
+
+Prefer clarity over micro-optimizations.
+
+---
+
+# Security Standards
+
+Never trust external input.
+
+Never expose stack traces.
+
+Never hardcode:
+
+- Secrets
+- API Keys
+- Passwords
+
+Always use environment variables.
+
+---
+
+# Documentation Standards
+
+Every exported class and function should be understandable from its name.
+
+Complex modules require README documentation.
+
+Architecture changes require an ADR.
+
+---
+
+# AI Agent Rules
+
+AI agents must:
+
+- Follow naming conventions
+- Preserve existing style
+- Avoid unnecessary abstractions
+- Keep files focused
+- Reuse shared packages
+- Never duplicate code
+- Prefer consistency over creativity
+
+If uncertain, match the surrounding codebase.
+
+---
+
+# Pull Request Checklist
+
+Every PR should satisfy:
+
+✓ Builds successfully
+
+✓ Passes lint
+
+✓ Passes tests
+
+✓ Uses shared contracts
+
+✓ Uses shared validation
+
+✓ Updates documentation
+
+✓ No architectural violations
+
+✓ No duplicated logic
+
+✓ No unused code
+
+✓ No console.log
+
+✓ No commented-out code
+
+---
+
+# Definition of Clean Code
+
+Nimbus code is considered clean when it is:
+
+Readable
+
+Predictable
+
+Testable
+
+Secure
+
+Consistent
+
+Documented
+
+Strongly Typed
+
+Observable
+
+Easy to Refactor
+
+Easy to Extend
+
+---
+
+# Success Criteria
+
+A new contributor should be able to:
+
+- Read the code
+- Understand the intent
+- Navigate the architecture
+- Add a feature
+- Write tests
+
+without needing tribal knowledge.
+
+Consistency is more valuable than individual coding style.

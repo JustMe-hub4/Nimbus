@@ -1,0 +1,14 @@
+capability: device-profile
+version: 1.0.0
+depends_on:
+  - identity
+publishes:
+  - DeviceProfileCreated
+consumes: []
+apis:
+  - POST /device-profiles
+  - GET /device-profiles
+  - GET /device-profiles/{id}
+events_version: 1
+audit: true
+ai_readiness: false
