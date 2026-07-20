@@ -1,13 +1,10 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logger = exports.app = void 0;
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
-const helmet_1 = __importDefault(require("helmet"));
-const pino_1 = __importDefault(require("pino"));
+const express_1 = require("express");
+const cors_1 = require("cors");
+const helmet_1 = require("helmet");
+const pino_1 = require("pino");
 const health_controller_1 = require("./health/health.controller");
 const logger = (0, pino_1.default)({
     level: process.env.LOG_LEVEL || "info",

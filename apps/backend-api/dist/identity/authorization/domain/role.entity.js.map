@@ -1,0 +1,1 @@
+{"version":3,"file":"role.entity.js","sourceRoot":"","sources":["../../../../src/identity/authorization/domain/role.entity.ts"],"names":[],"mappings":";;;AAEA,MAAa,IAAI;IAQf,YAAY,KAAoB;QAC9B,MAAM,CAAC,MAAM,CAAC,IAAI,EAAE,KAAK,CAAC,CAAC;QAC3B,IAAI,CAAC,WAAW,GAAG,KAAK,CAAC,WAAW,IAAI,EAAE,CAAC;IAC7C,CAAC;CACF;AAZD,oBAYC"}

@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Inject } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IPermissionChecker } from '../domain/permission-checker.interface';
 import { REQUIRED_PERMISSION_KEY } from '../../shared/decorators/require-permission.decorator';

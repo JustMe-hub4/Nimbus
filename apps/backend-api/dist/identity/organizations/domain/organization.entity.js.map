@@ -1,0 +1,1 @@
+{"version":3,"file":"organization.entity.js","sourceRoot":"","sources":["../../../../src/identity/organizations/domain/organization.entity.ts"],"names":[],"mappings":";;;AAAA,MAAa,YAAY;IAWvB,YAAY,KAA4B;QACtC,MAAM,CAAC,MAAM,CAAC,IAAI,EAAE,KAAK,CAAC,CAAC;IAC7B,CAAC;IAEM,UAAU,CAAC,IAAY;QAC5B,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IAEnB,CAAC;CACF;AAnBD,oCAmBC"}

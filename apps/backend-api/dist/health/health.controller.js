@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
     });
 });
 router.get("/ready", (req, res) => {
-    // Add dependency checks here when we have them
     res.json({
         status: "ready",
         dependencies: {

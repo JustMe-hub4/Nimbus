@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IdentityModule } from './identity/identity.module';
 import { AssetManagementModule } from './asset-management/asset-management.module';
+import { TelemetryModule } from './telemetry/telemetry.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AssetManagementModule } from './asset-management/asset-management.modul
     }),
     IdentityModule,
     AssetManagementModule,
+    TelemetryModule,
   ],
 })
 export class AppModule {}
