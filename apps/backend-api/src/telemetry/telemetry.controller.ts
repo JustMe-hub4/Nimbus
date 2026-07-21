@@ -4,11 +4,8 @@ import { Pool } from 'pg';
 const router = Router();
 
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: 5432,
-  database: process.env.DB_NAME || 'nimbus',
-  user: process.env.DB_USER || 'nimbus',
-  password: process.env.DB_PASSWORD || 'nimbus_dev_password',
+  connectionString: process.env.DATABASE_URL || 'postgresql://nimbus:nimbus_dev_password@localhost:5432/nimbus',
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 router.get('/latest', async (req, res) => {
@@ -18,6 +15,7 @@ router.get('/latest', async (req, res) => {
     );
     res.json({ count: result.rows.length, data: result.rows });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch telemetry' });
   }
 });
@@ -38,6 +36,7 @@ router.get('/stats', async (req, res) => {
     );
     res.json({ devices: result.rows });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Failed to fetch stats' });
   }
 });
