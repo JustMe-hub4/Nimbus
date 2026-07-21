@@ -1,5 +1,4 @@
 version: '3.9'
-
 services:
   postgres:
     image: timescale/timescaledb:latest-pg16
@@ -65,6 +64,44 @@ services:
       - postgres
     networks:
       - nimbus-network
+
+  mqtt-consumer:
+    image: python:3.11-slim
+    container_name: nimbus-mqtt-consumer
+    working_dir: /app
+    volumes:
+      - ./mqtt_consumer.py:/app/mqtt_consumer.py
+    command: >
+      sh -c "pip install paho-mqtt psycopg2-binary -q &&
+             python mqtt_consumer.py"
+    environment:
+      DB_HOST: postgres
+      MQTT_HOST: mosquitto
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+    networks:
+      - nimbus-network
+    restart: unless-stopped
+
+  virtual-device:
+    image: python:3.11-slim
+    container_name: nimbus-virtual-device
+    working_dir: /app
+    volumes:
+      - ./virtual_device.py:/app/virtual_device.py
+    command: >
+      sh -c "pip install paho-mqtt -q &&
+             python virtual_device.py"
+    environment:
+      MQTT_HOST: mosquitto
+    depends_on:
+      - mosquitto
+    networks:
+      - nimbus-network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
