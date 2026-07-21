@@ -12,7 +12,6 @@ const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const identity_module_1 = require("./identity/identity.module");
 const asset_management_module_1 = require("./asset-management/asset-management.module");
-const telemetry_module_1 = require("./telemetry/telemetry.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -32,7 +31,6 @@ exports.AppModule = AppModule = __decorate([
             }),
             identity_module_1.IdentityModule,
             asset_management_module_1.AssetManagementModule,
-            telemetry_module_1.TelemetryModule,
         ],
     })
 ], AppModule);

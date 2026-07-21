@@ -1,43 +1,42 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TelemetryController = void 0;
-const common_1 = require("@nestjs/common");
-const telemetry_service_1 = require("./telemetry.service");
-let TelemetryController = class TelemetryController {
-    constructor(telemetryService) {
-        this.telemetryService = telemetryService;
+exports.telemetryRouter = void 0;
+const express_1 = require("express");
+const pg_1 = require("pg");
+const router = (0, express_1.Router)();
+exports.telemetryRouter = router;
+const pool = new pg_1.Pool({
+    host: process.env.DB_HOST || 'localhost',
+    port: 5432,
+    database: process.env.DB_NAME || 'nimbus',
+    user: process.env.DB_USER || 'nimbus',
+    password: process.env.DB_PASSWORD || 'nimbus_dev_password',
+});
+router.get('/latest', async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT * FROM telemetry ORDER BY time DESC LIMIT 10`);
+        res.json({ count: result.rows.length, data: result.rows });
     }
-    async getLatest() {
-        return this.telemetryService.getLatest();
+    catch (err) {
+        res.status(500).json({ error: 'Failed to fetch telemetry' });
     }
-    async getStats() {
-        return this.telemetryService.getStats();
+});
+router.get('/stats', async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT 
+        device_id,
+        COUNT(*) as readings,
+        ROUND(AVG(temperature)::numeric, 2) as avg_temperature,
+        ROUND(AVG(humidity)::numeric, 2) as avg_humidity,
+        ROUND(MIN(temperature)::numeric, 2) as min_temperature,
+        ROUND(MAX(temperature)::numeric, 2) as max_temperature,
+        MAX(time) as last_seen
+       FROM telemetry 
+       GROUP BY device_id`);
+        res.json({ devices: result.rows });
     }
-};
-exports.TelemetryController = TelemetryController;
-__decorate([
-    (0, common_1.Get)('latest'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], TelemetryController.prototype, "getLatest", null);
-__decorate([
-    (0, common_1.Get)('stats'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], TelemetryController.prototype, "getStats", null);
-exports.TelemetryController = TelemetryController = __decorate([
-    (0, common_1.Controller)('telemetry'),
-    __metadata("design:paramtypes", [telemetry_service_1.TelemetryService])
-], TelemetryController);
+    catch (err) {
+        res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+});
 //# sourceMappingURL=telemetry.controller.js.map

@@ -6,6 +6,7 @@ const cors_1 = require("cors");
 const helmet_1 = require("helmet");
 const pino_1 = require("pino");
 const health_controller_1 = require("./health/health.controller");
+const telemetry_controller_1 = require("./telemetry/telemetry.controller");
 const logger = (0, pino_1.default)({
     level: process.env.LOG_LEVEL || "info",
     transport: process.env.NODE_ENV === "development" ? { target: "pino-pretty" } : undefined,
@@ -13,13 +14,18 @@ const logger = (0, pino_1.default)({
 exports.logger = logger;
 const app = (0, express_1.default)();
 exports.app = app;
-app.use((0, helmet_1.default)());
+app.use((0, helmet_1.default)({ contentSecurityPolicy: false }));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use("/api/v1/health", health_controller_1.healthRouter);
+app.use("/api/v1/telemetry", telemetry_controller_1.telemetryRouter);
+app.get("/dashboard", (req, res) => {
+    res.sendFile("/workspaces/codespaces-blank/Projects/apps/backend-api/public/dashboard.html");
+});
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     logger.info(`Nimbus API server listening on port ${PORT}`);
+    logger.info(`Dashboard: http://localhost:${PORT}/dashboard`);
 });
 //# sourceMappingURL=index.js.map
