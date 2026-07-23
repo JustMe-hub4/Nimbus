@@ -2,9 +2,9 @@ import { Inject } from '@nestjs/common';
 import { IMeasurementTypeRepository } from '../domain/measurement-type.repository.interface';
 
 export class ListMeasurementTypesUseCase {
-  constructor(@Inject('IMeasurementTypeRepository') private repo: IMeasurementTypeRepository) {}
+  constructor(@Inject('IMeasurementTypeRepository') private mtRepo: IMeasurementTypeRepository) {}
 
-  async execute() {
-    return this.repo.findAll();
+  async execute(category?: string) {
+    return this.mtRepo.findAll(category);
   }
 }

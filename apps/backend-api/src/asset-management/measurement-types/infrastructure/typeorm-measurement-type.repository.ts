@@ -15,11 +15,18 @@ export class TypeOrmMeasurementTypeRepository implements IMeasurementTypeReposit
   private toDomain(orm: MeasurementTypeOrmEntity): MeasurementType {
     return new MeasurementType({
       id: orm.id,
+      code: orm.code,
       name: orm.name,
-      unit: orm.unit,
+      description: orm.description,
+      category: orm.category,
+      defaultUnitId: orm.defaultUnitId,
       minValue: orm.minValue,
       maxValue: orm.maxValue,
-      description: orm.description,
+      precision: orm.precision,
+      aggregationStrategy: orm.aggregationStrategy as any,
+      semanticDescription: orm.semanticDescription,
+      embeddingEligible: orm.embeddingEligible,
+      knowledgePriority: orm.knowledgePriority,
       createdAt: orm.createdAt,
       updatedAt: orm.updatedAt,
       deletedAt: orm.deletedAt,
@@ -31,29 +38,45 @@ export class TypeOrmMeasurementTypeRepository implements IMeasurementTypeReposit
 
   async save(type: MeasurementType): Promise<MeasurementType> {
     const ormEntity = this.ormRepo.create({
+      code: type.code,
       name: type.name,
-      unit: type.unit,
+      description: type.description,
+      category: type.category,
+      defaultUnitId: type.defaultUnitId,
       minValue: type.minValue,
       maxValue: type.maxValue,
-      description: type.description,
+      precision: type.precision,
+      aggregationStrategy: type.aggregationStrategy,
+      semanticDescription: type.semanticDescription,
+      embeddingEligible: type.embeddingEligible,
+      knowledgePriority: type.knowledgePriority,
       createdBy: type.createdBy,
+      updatedBy: type.updatedBy,
+      deletedAt: type.deletedAt,
+      deletedBy: type.deletedBy,
     });
     const saved = await this.ormRepo.save(ormEntity);
     return this.toDomain(saved);
   }
 
   async findById(id: string): Promise<MeasurementType | null> {
-    const ormEntity = await this.ormRepo.findOne({ where: { id } });
-    return ormEntity ? this.toDomain(ormEntity) : null;
+    const orm = await this.ormRepo.findOne({ where: { id } });
+    return orm ? this.toDomain(orm) : null;
   }
 
   async findByName(name: string): Promise<MeasurementType | null> {
-    const ormEntity = await this.ormRepo.findOne({ where: { name } });
-    return ormEntity ? this.toDomain(ormEntity) : null;
+    const orm = await this.ormRepo.findOne({ where: { name } });
+    return orm ? this.toDomain(orm) : null;
   }
 
-  async findAll(): Promise<MeasurementType[]> {
-    const list = await this.ormRepo.find();
+  async findByCode(code: string): Promise<MeasurementType | null> {
+    const orm = await this.ormRepo.findOne({ where: { code } });
+    return orm ? this.toDomain(orm) : null;
+  }
+
+  async findAll(category?: string): Promise<MeasurementType[]> {
+    const where = category ? { category } : {};
+    const list = await this.ormRepo.find({ where });
     return list.map(orm => this.toDomain(orm));
   }
 

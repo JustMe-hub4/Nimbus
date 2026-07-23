@@ -7,10 +7,19 @@ export class MeasurementTypeOrmEntity extends BaseOrmEntity {
   id: string;
 
   @Column({ unique: true })
+  code: string;
+
+  @Column({ unique: true })
   name: string;
 
+  @Column({ nullable: true })
+  description: string | null;
+
   @Column()
-  unit: string;
+  category: string;
+
+  @Column({ name: 'default_unit_id' })
+  defaultUnitId: string;
 
   @Column({ name: 'min_value', type: 'float', nullable: true })
   minValue: number | null;
@@ -19,5 +28,17 @@ export class MeasurementTypeOrmEntity extends BaseOrmEntity {
   maxValue: number | null;
 
   @Column({ nullable: true })
-  description: string | null;
+  precision: number | null;
+
+  @Column({ name: 'aggregation_strategy', nullable: true })
+  aggregationStrategy: string | null;
+
+  @Column({ name: 'semantic_description', nullable: true })
+  semanticDescription: string | null;
+
+  @Column({ name: 'embedding_eligible', default: false })
+  embeddingEligible: boolean;
+
+  @Column({ name: 'knowledge_priority', default: 0 })
+  knowledgePriority: number;
 }

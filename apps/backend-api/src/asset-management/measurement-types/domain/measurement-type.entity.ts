@@ -1,10 +1,17 @@
 export class MeasurementType {
   public readonly id: string;
+  public code: string;
   public name: string;
-  public unit: string;
+  public description: string | null;
+  public category: string;
+  public defaultUnitId: string;
   public minValue: number | null;
   public maxValue: number | null;
-  public description: string | null;
+  public precision: number | null;
+  public aggregationStrategy: 'AVG' | 'MAX' | 'MIN' | 'LAST' | 'SUM' | null;
+  public semanticDescription: string | null;
+  public embeddingEligible: boolean;
+  public knowledgePriority: number;
   public createdAt: Date;
   public updatedAt: Date;
   public deletedAt: Date | null;
@@ -14,22 +21,7 @@ export class MeasurementType {
 
   constructor(props: Partial<MeasurementType>) {
     Object.assign(this, props);
-  }
-
-  public updateName(name: string): void {
-    this.name = name;
-  }
-
-  public updateUnit(unit: string): void {
-    this.unit = unit;
-  }
-
-  public updateRange(min: number | null, max: number | null): void {
-    this.minValue = min;
-    this.maxValue = max;
-  }
-
-  public updateDescription(description: string | null): void {
-    this.description = description;
+    this.embeddingEligible = props.embeddingEligible ?? false;
+    this.knowledgePriority = props.knowledgePriority ?? 0;
   }
 }

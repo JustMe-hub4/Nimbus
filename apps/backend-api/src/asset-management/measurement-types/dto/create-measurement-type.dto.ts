@@ -1,21 +1,47 @@
-import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import { IsString, IsUUID, IsOptional, IsNumber, IsIn, IsBoolean } from 'class-validator';
 
 export class CreateMeasurementTypeDto {
+  @IsString()
+  code: string;
+
   @IsString()
   name: string;
 
   @IsString()
-  unit: string;
-
   @IsOptional()
-  @IsNumber()
-  minValue?: number | null;
+  description?: string;
 
-  @IsOptional()
-  @IsNumber()
-  maxValue?: number | null;
-
-  @IsOptional()
   @IsString()
-  description?: string | null;
+  category: string;
+
+  @IsUUID()
+  defaultUnitId: string;
+
+  @IsNumber()
+  @IsOptional()
+  minValue?: number;
+
+  @IsNumber()
+  @IsOptional()
+  maxValue?: number;
+
+  @IsNumber()
+  @IsOptional()
+  precision?: number;
+
+  @IsIn(['AVG', 'MAX', 'MIN', 'LAST', 'SUM'])
+  @IsOptional()
+  aggregationStrategy?: 'AVG' | 'MAX' | 'MIN' | 'LAST' | 'SUM';
+
+  @IsString()
+  @IsOptional()
+  semanticDescription?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  embeddingEligible?: boolean;
+
+  @IsNumber()
+  @IsOptional()
+  knowledgePriority?: number;
 }
